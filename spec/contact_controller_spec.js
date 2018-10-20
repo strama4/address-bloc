@@ -26,6 +26,18 @@ describe("ContactController", () => {
             });
         });
     });
+    describe("#listContacts()", () => {
+        it("should return a message saying no messages when empty", (done) => {
+            this.book.addContact("Alice", "000-000-0000")
+            .then(() => {
+                expect(Object.keys(this.book.contacts).length).toBe(0);
+                done();
+            })
+            .catch((err) => {
+                done();
+            })
+        })
+    })
     it("should be defined", () => {
         expect(ContactController).toBeDefined();
     })
