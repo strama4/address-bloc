@@ -101,6 +101,24 @@ module.exports = class MenuController {
 
     showContact(contact) {
         this._printContact(contact);
+        inquirer.prompt(this.book.showContactQuestions)
+        .then((answer) => {
+            switch(answer.selected) {
+                case "Delete contact":
+                    this.delete(contact);
+                    break;
+                case "Main menu":
+                    this.main();
+                    break;
+                default:
+                    console.log("Something went wrong")
+                    this.showContact(contact);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            this.showContact(contact);
+        });
     }
 
     _printContact(contact) {
@@ -110,5 +128,23 @@ module.exports = class MenuController {
         email: ${contact.email}
         -------------------`
         );
+    }
+
+    delete(contact) {
+        inquirer.prompt(this.book.deleteConfirmQuestions)
+            .then((response) => {
+                if (response) {
+                    this.book.delete(contact.id);
+                    console.log('contact deleted!');
+                    this.main();
+                } else {
+                    console.log("contact not deleted");
+                    this.showContact(contact);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                this.main();
+            });
     }
 }
