@@ -29,9 +29,54 @@ module.exports = class ContactController {
                 }
             }
         ];
+        this.searchQuestions = [
+            {
+                type: "input",
+                name: "name",
+                message: "Name of contact to search - ",
+                validate(val) {
+                    return val !== "";
+                }
+            }
+        ];
     }
 
     addContact(name, phone, email) {
         return Contact.create({name, phone, email});
+    }
+
+    getContacts() {
+        return Contact.findAll();
+    }
+
+    iterativeSearch(contacts, target) {
+        for (let contact of contacts) {
+            if (contact.name.toLowerCase() === target.toLowerCase()) {
+                return contact;
+            }
+        }
+        return null;
+    }
+
+    binarySearch(contacts, target) {
+        let min = 0;
+        let max = contacts.length - 1;
+        while (min <= max) {
+            let mid = Math.floor((min + max) / 2);
+            if (contacts[mid].dataValues.name === target) {
+                return contacts[mid];
+            } else if (contacts[mid].dataValues.name > target) {
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+        }
+        return null;
+    }
+
+    search(name) {
+        return Contact.findOne({
+            where: {name}
+        });
     }
 }
